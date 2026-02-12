@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islah Nexus — Your Digital Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void-dark: #0a0e1a;
+            --void-darker: #050810;
+            --nexus-cyan: #00d9ff;
+            --nexus-teal: #00a896;
+            --nexus-deep: #005f73;
+            --portal-glow: rgba(0, 217, 255, 0.4);
+            --text-primary: #e8f4f8;
+            --text-secondary: #8ba8b3;
+            --transition-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: var(--void-darker);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #spiralCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .portal-interface {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            animation: fadeIn 1.2s var(--transition-smooth);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            animation: fadeIn 1s var(--transition-smooth);
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            filter: 
+                brightness(1.2)
+                saturate(0)
+                sepia(1)
+                hue-rotate(160deg)
+                brightness(1.5);
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .logo:hover {
+            filter: 
+                brightness(1.3)
+                saturate(0)
+                sepia(1)
+                hue-rotate(160deg)
+                brightness(1.7);
+            transform: scale(1.05);
+        }
+
+        .tagline {
+            text-align: center;
+            max-width: 800px;
+            animation: fadeIn 1.5s var(--transition-smooth) 0.3s backwards;
+        }
+
+        .tagline h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--nexus-cyan), var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            letter-spacing: 0.02em;
+        }
+
+        .tagline p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .ascend-button {
+            position: relative;
+            padding: 1.5rem 4rem;
+            background: rgba(0, 217, 255, 0.08);
+            border: 2px solid var(--nexus-cyan);
+            border-radius: 50px;
+            color: var(--nexus-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s var(--transition-smooth);
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 
+                0 0 30px var(--portal-glow),
+                inset 0 0 20px rgba(0, 217, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .ascend-button::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--nexus-cyan), var(--nexus-teal));
+            opacity: 0;
+            transition: opacity 0.4s var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .ascend-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 0 50px var(--portal-glow),
+                inset 0 0 30px rgba(0, 217, 255, 0.2);
+        }
+
+        .ascend-button:hover::before {
+            opacity: 0.15;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeIn 1.8s var(--transition-smooth) 0.6s backwards;
+        }
+
+        .nav-link {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(139, 168, 179, 0.3);
+            border-radius: 4px;
+            transition: all 0.3s var(--transition-smooth);
+            letter-spacing: 0.05em;
+        }
+
+        .nav-link:hover {
+            color: var(--nexus-cyan);
+            border-color: var(--nexus-cyan);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .info-card {
+            background: rgba(10, 14, 26, 0.6);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 700px;
+            margin-top: 2rem;
+            backdrop-filter: blur(20px);
+            animation: fadeIn 2.1s var(--transition-smooth) 0.9s backwards;
+        }
+
+        .info-card h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--nexus-cyan);
+        }
+
+        .info-card p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .info-card .principles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .principle {
+            background: rgba(0, 217, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--nexus-cyan);
+        }
+
+        .principle-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--nexus-cyan);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .principle-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(139, 168, 179, 0.1);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .footer-content a {
+            color: var(--nexus-cyan);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .footer-content a:hover {
+            opacity: 0.7;
+        }
+
+        .footer-meta {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+            .ascend-button {
+                padding: 1.2rem 3rem;
+                font-size: 1.2rem;
+            }
+
+            .info-card .principles {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+
+        .particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: var(--nexus-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="spiralCanvas"></canvas>
+
+    <div class="container">
+        <div class="portal-interface">
+            <div class="logo-container">
+                <img src="islah-nexus-logo.jpg" alt="Islah Nexus" class="logo">
+            </div>
+
+            <div class="tagline">
+                <h1>islah nexus</h1>
+                <p>your digital legacy starts here</p>
+            </div>
+
+            <a href="https://github.com/Jannjhay-afk/project-islah-protocol" class="ascend-button">
+                Ascend
+            </a>
+
+            <div class="nav-links">
+                <a href="https://github.com/Jannjhay-afk/project-islah-protocol" class="nav-link">Repository</a>
+                <a href="https://github.com/Jannjhay-afk/project-islah-protocol#readme" class="nav-link">Documentation</a>
+                <a href="mailto:jannjhay@gmail.com" class="nav-link">Contact</a>
+            </div>
+
+            <div class="info-card">
+                <h2>The Imago Dei Movement</h2>
+                <p>Building a sanctuary of kindness and truth for the next generation. We create digital mirrors, not masters—AI systems that reflect human dignity through constitutional principles embedded at the foundation.</p>
+                
+                <div class="principles">
+                    <div class="principle">
+                        <div class="principle-title">Kindness</div>
+                        <div class="principle-text">Prioritize human dignity in every interaction</div>
+                    </div>
+                    <div class="principle">
+                        <div class="principle-title">Truth</div>
+                        <div class="principle-text">Reflect reality accurately, without distortion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                Lead Architect: Jannjhay "JJ" De Leon<br>
+                Bustos, Bulacan, Philippines<br>
+                <a href="mailto:jannjhay@gmail.com">jannjhay@gmail.com</a>
+            </div>
+            <div class="footer-meta">
+                Privacy-by-design × No surveillance × Open source<br>
+                "We do not build apps. We build supply chains for the human soul."
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('spiralCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        let rotation = 0;
+        const spiralArms = 8;
+        const maxRadius = Math.max(width, height) * 0.6;
+
+        function drawSpiral() {
+            ctx.clearRect(0, 0, width, height);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            rotation += 0.002;
+            
+            for (let arm = 0; arm < spiralArms; arm++) {
+                const armOffset = (Math.PI * 2 / spiralArms) * arm;
+                
+                ctx.beginPath();
+                
+                for (let i = 0; i < 150; i++) {
+                    const angle = (i / 20) + rotation + armOffset;
+                    const radius = (i / 150) * maxRadius;
+                    
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+                gradient.addColorStop(0, 'rgba(0, 217, 255, 0.3)');
+                gradient.addColorStop(0.5, 'rgba(0, 168, 150, 0.15)');
+                gradient.addColorStop(1, 'rgba(0, 95, 115, 0.05)');
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            
+            const glowGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 200);
+            glowGradient.addColorStop(0, 'rgba(0, 217, 255, 0.2)');
+            glowGradient.addColorStop(1, 'rgba(0, 217, 255, 0)');
+            
+            ctx.fillStyle = glowGradient;
+            ctx.fillRect(centerX - 200, centerY - 200, 400, 400);
+            
+            requestAnimationFrame(drawSpiral);
+        }
+
+        drawSpiral();
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 25000);
+        }
+
+        setInterval(createParticle, 800);
+        
+        for (let i = 0; i < 15; i++) {
+            setTimeout(createParticle, i * 100);
+        }
+
+        const ascendBtn = document.querySelector('.ascend-button');
+        ascendBtn.addEventListener('mouseenter', () => {
+            canvas.style.filter = 'brightness(1.2)';
+        });
+        ascendBtn.addEventListener('mouseleave', () => {
+            canvas.style.filter = 'brightness(1)';
+        });
+    </script>
+</body>
+</html>
